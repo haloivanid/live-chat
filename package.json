@@ -1,0 +1,8 @@
+{
+  "name": "live-chat",
+  "version": "0.0.0-dev",
+  "description": "A simple live chat app",
+  "scripts": {},
+  "author": "ivanazis <ivanazis.id@gmail.com>",
+  "license": "ISC"
+}
