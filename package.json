@@ -2,7 +2,13 @@
   "name": "live-chat",
   "version": "0.0.0-dev",
   "description": "A simple live chat app",
-  "scripts": {},
+  "scripts": {
+    "prepare": "husky",
+    "test": "echo \"Error: no test specified\""
+  },
   "author": "ivanazis <ivanazis.id@gmail.com>",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
 }
