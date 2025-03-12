@@ -4,7 +4,9 @@
   "description": "A simple live chat app",
   "scripts": {
     "prepare": "husky",
-    "test": "echo \"Error: no test specified\""
+    "dev": "pnpm -r dev",
+    "test": "echo \"Error: no test specified\"",
+    "format": "pnpm -r format"
   },
   "author": "ivanazis <ivanazis.id@gmail.com>",
   "license": "ISC",

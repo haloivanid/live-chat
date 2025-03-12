@@ -1,0 +1,15 @@
+{
+  "name": "@live-chat/api",
+  "private": true,
+  "scripts": {
+    "gem": "gem",
+    "rails": "bin/rails",
+    "bundle": "bin/bundle",
+    "setup": "bin/setup",
+    "dev": "rails server",
+    "test": "bundle exec rails test",
+    "lint": "bundle exec rubocop",
+    "lint:fix": "bundle exec rubocop -A",
+    "format": "bundle exec rubocop --autocorrect"
+  }
+}
