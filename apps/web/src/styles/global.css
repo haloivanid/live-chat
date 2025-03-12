@@ -1,1 +1,27 @@
 @import 'tailwindcss';
+@import '@fontsource-variable/inter';
+
+html,
+body {
+  font-family: 'Inter Variable', sans-serif;
+}
+
+.scrollable {
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @apply bg-gray-500;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.8);
+  }
+}
