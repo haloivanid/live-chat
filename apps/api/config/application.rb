@@ -41,7 +41,7 @@ module Api
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
-    env_file = File.expand_path("../../../.env", __dir__);
+    env_file = File.expand_path("../../../.env", __dir__)
     if File.exist?(env_file)
       require "dotenv"
       Dotenv.load(env_file)

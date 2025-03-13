@@ -5,6 +5,7 @@
     "gem": "gem",
     "rails": "bin/rails",
     "bundle": "bin/bundle",
+    "rake": "bin/rake",
     "setup": "bin/setup",
     "solargraph": "solargraph",
     "dev": "rails server",
