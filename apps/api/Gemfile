@@ -36,4 +36,8 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # Static analysis for Ruby [https://github.com/solargraph/solargraph]
+  gem "solargraph", "~> 0.52.0"
 end
+

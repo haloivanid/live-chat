@@ -6,6 +6,7 @@
     "rails": "bin/rails",
     "bundle": "bin/bundle",
     "setup": "bin/setup",
+    "solargraph": "solargraph",
     "dev": "rails server",
     "test": "bundle exec rails test",
     "lint": "bundle exec rubocop",
