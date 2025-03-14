@@ -1,33 +1,29 @@
+import { User } from '@/types/general.types';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 
-interface User {
-  id: string;
-  name: string;
-}
-
-export interface Message {
+export interface IMessage {
   id: string;
   datetime: number;
   content: string;
   from: User;
-  isSelf: boolean;
 }
 
-// ======================= Message Component =======================
 interface MessageProps {
-  message: Message;
+  message: IMessage;
   groupWithPrev: boolean;
+  currentUser: User;
 }
 
-const MessageComponent: React.FC<MessageProps> = ({ message, groupWithPrev }) => {
-  const containerClasses = twMerge('w-full flex flex-row', message.isSelf ? 'justify-end' : 'justify-start');
+const MessageComponent: React.FC<MessageProps> = ({ message, groupWithPrev, currentUser }) => {
+  const isSelf = message.from.id === currentUser.id;
+  const containerClasses = twMerge('w-full flex flex-row', isSelf ? 'justify-end' : 'justify-start');
 
   const bubbleClasses = twMerge(
     'max-w-[80%] p-4 shadow-md',
     !groupWithPrev && 'min-w-[220px]',
-    message.isSelf ? 'bg-lime-100' : 'bg-sky-100',
-    groupWithPrev ? 'rounded-2xl' : message.isSelf ? 'rounded-l-2xl rounded-br-2xl' : 'rounded-r-2xl rounded-bl-2xl',
+    isSelf ? 'bg-lime-100' : 'bg-sky-100',
+    groupWithPrev ? 'rounded-2xl' : isSelf ? 'rounded-l-2xl rounded-br-2xl' : 'rounded-r-2xl rounded-bl-2xl',
   );
 
   return (
@@ -37,7 +33,7 @@ const MessageComponent: React.FC<MessageProps> = ({ message, groupWithPrev }) =>
           <>
             <div className="flex flex-row justify-between items-center gap-x-2">
               <div className="max-w-[100px] text-sm font-bold text-gray-800 truncate cursor-default">
-                {message.from.name}
+                {message.from.username}
               </div>
               <time className="text-xs text-gray-500">{new Date(message.datetime).toLocaleString()}</time>
             </div>

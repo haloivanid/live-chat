@@ -31,7 +31,7 @@ class RoomController < ApplicationController
   def show_messages
     room_members = RoomMember.where(room_id: params[:id])
     @pagy, @records = pagy(
-      Chat.where(room_member_id: room_members.map(&:id)).order(id: :desc), limit: 10
+      Chat.where(room_member_id: room_members.map(&:id)).order(id: :desc), limit: params[:limit] || 20
     )
 
     @metadata = {
