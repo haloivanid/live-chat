@@ -1,0 +1,50 @@
+name: live-chat
+
+services:
+  web:
+    container_name: live-chat-app
+    image: live-chat-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: web
+    restart: unless-stopped
+    tty: true
+    logging:
+      driver: 'json-file'
+    ports:
+      - '80:8080'
+    networks:
+      net:
+    env_file:
+      - .env.production.local
+    depends_on:
+      server:
+        condition: service_healthy
+  server:
+    container_name: live-chat-server
+    image: live-chat-server:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api
+    restart: unless-stopped
+    tty: true
+    logging:
+      driver: 'json-file'
+    networks:
+      net:
+    env_file:
+      - .env.production.local
+    healthcheck:
+      test: curl --fail http://localhost:3000 || exit 1
+      interval: 30s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+networks:
+  net:
+    name: net
+    external: true
+    driver: bridge

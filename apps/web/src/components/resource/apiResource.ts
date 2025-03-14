@@ -11,7 +11,7 @@ interface IOpts<D = Record<string, any>> {
 }
 
 const createAxiosConfig = (opts: IOpts): AxiosRequestConfig => ({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: '/api',
   timeout: 20 * 1000,
   headers: {
     'Content-Type': 'application/json',

@@ -48,7 +48,7 @@ export const App: React.FC = () => {
 
   React.useEffect(() => {
     if (content.trim()) {
-      pushMessage(content);
+      pushMessage();
     }
   }, [content]);
 
