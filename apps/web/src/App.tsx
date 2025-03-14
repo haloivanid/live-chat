@@ -1,130 +1,32 @@
 import { faker } from '@faker-js/faker';
 import React from 'react';
 import { IoChatbubble } from 'react-icons/io5';
-import { LuSend } from 'react-icons/lu';
 import { twMerge } from 'tailwind-merge';
+import { pusher } from '@/utils/pusher.util';
+import { InputMessage } from '@/components/ui/Message/Input';
+import { Message } from './components/ui/Message/Message';
 
-// ======================= Types =======================
 interface User {
   id: string;
   name: string;
 }
 
-interface Message {
+interface IAPIMessage {
   id: string;
-  datetime: number;
-  content: string;
-  from: User;
-  isSelf: boolean;
-}
-
-// ======================= Message Component =======================
-interface MessageProps {
-  message: Message;
-  groupWithPrev: boolean;
-}
-
-const MessageComponent: React.FC<MessageProps> = ({ message, groupWithPrev }) => {
-  const containerClasses = twMerge('w-full flex flex-row', message.isSelf ? 'justify-end' : 'justify-start');
-
-  const bubbleClasses = twMerge(
-    'max-w-[80%] p-4 shadow-md',
-    !groupWithPrev && 'min-w-[220px]',
-    message.isSelf ? 'bg-lime-100' : 'bg-sky-100',
-    groupWithPrev ? 'rounded-2xl' : message.isSelf ? 'rounded-l-2xl rounded-br-2xl' : 'rounded-r-2xl rounded-bl-2xl',
-  );
-
-  return (
-    <div className={containerClasses}>
-      <div className={bubbleClasses}>
-        {!groupWithPrev && (
-          <>
-            <div className="flex flex-row justify-between items-center gap-x-2">
-              <div className="max-w-[100px] text-sm font-bold text-gray-800 truncate cursor-default">
-                {message.from.name}
-              </div>
-              <time className="text-xs text-gray-500">{new Date(message.datetime).toLocaleString()}</time>
-            </div>
-            <hr className="mb-2 text-gray-300" />
-          </>
-        )}
-        <p className="text-sm text-wrap whitespace-pre-wrap">{message.content}</p>
-      </div>
-    </div>
-  );
-};
-
-// Optimized with React.memo and custom comparison
-const areEqual = (prevProps: MessageProps, nextProps: MessageProps) => {
-  return (
-    prevProps.message.id === nextProps.message.id &&
-    prevProps.groupWithPrev === nextProps.groupWithPrev &&
-    prevProps.message.content === nextProps.message.content &&
-    prevProps.message.datetime === nextProps.message.datetime
-  );
-};
-
-const Message = React.memo(MessageComponent, areEqual);
-
-// ======================= Input Component =======================
-interface InputMessageProps {
-  onSend: (message: string) => void;
-}
-
-const InputMessage: React.FC<InputMessageProps> = ({ onSend }) => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const message = formData.get('message')?.toString().trim();
-
-    if (message) {
-      onSend(message);
-      e.currentTarget.reset();
-    }
+  created_at: string;
+  message: string;
+  room_member: {
+    user: {
+      id: string;
+      username: string;
+    };
+    room: {
+      id: string;
+      name: string;
+    };
   };
+}
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      const form = e.currentTarget.form;
-      if (form) {
-        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-      }
-    }
-  };
-
-  return (
-    <form className="w-full flex items-center gap-2" onSubmit={handleSubmit}>
-      <textarea
-        name="message"
-        placeholder="Type your message"
-        autoComplete="off"
-        aria-label="Message input"
-        className={twMerge(
-          'w-[calc(100%-40px)] h-10 px-4 py-2',
-          'focus:outline-none border-[0.5px] border-gray-300',
-          'rounded-2xl bg-gray-200 focus:border-lime-600',
-          'resize-none overflow-hidden',
-        )}
-        onKeyDown={handleKeyDown}
-        rows={2}
-      />
-      <button
-        type="submit"
-        className={twMerge(
-          'w-10 h-10 flex items-center justify-center',
-          'bg-lime-600 rounded-full hover:bg-lime-700',
-          'transition-colors duration-200',
-        )}
-        aria-label="Send message"
-      >
-        <LuSend className="w-6 h-6 text-white" />
-      </button>
-    </form>
-  );
-};
-
-// ======================= Main App Component =======================
 const useAutoScroll = (...deps: React.DependencyList) => {
   React.useEffect(() => {
     const messageBody = document.getElementById('chat-window-body');
@@ -141,6 +43,29 @@ export const App: React.FC = () => {
   });
 
   const [messages, setMessages] = React.useState<Message[]>([]);
+
+  React.useEffect(() => {
+    const channel = pusher.subscribe('simple-live-chat');
+
+    channel.bind('new-chat', (data: IAPIMessage) => {
+      const newMessage: Message = {
+        id: data.id,
+        from: {
+          id: data.room_member.user.id,
+          name: data.room_member.user.username,
+        },
+        isSelf: false,
+        datetime: new Date(data.created_at).getTime(),
+        content: data.message,
+      };
+
+      setMessages((prev) => [...prev, newMessage]);
+
+      return () => {
+        pusher.unsubscribe('new-chat');
+      };
+    });
+  }, []);
 
   useAutoScroll(messages);
 
