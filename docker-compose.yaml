@@ -3,11 +3,7 @@ name: live-chat
 services:
   web:
     container_name: live-chat-app
-    image: live-chat-app:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: web
+    image: ghcr.io/haloivanid/live-chat/live-chat-web:0.0.0-dev
     restart: unless-stopped
     tty: true
     logging:
@@ -16,26 +12,34 @@ services:
       - '80:8080'
     networks:
       net:
-    env_file:
-      - .env.production.local
+    environment:
+      - VITE_PUSHER_KEY=${VITE_PUSHER_KEY=}
+      - VITE_PUSHER_CLUSTER${VITE_PUSHER_CLUSTER}
+      - VITE_API_BASE_URL${VITE_API_BASE_URL}
     depends_on:
       server:
         condition: service_healthy
   server:
     container_name: live-chat-server
-    image: live-chat-server:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: api
+    image: ghcr.io/haloivanid/live-chat/live-chat-api:0.0.0-dev
     restart: unless-stopped
     tty: true
     logging:
       driver: 'json-file'
     networks:
       net:
-    env_file:
-      - .env.production.local
+    environment:
+      - RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
+      - RAILS_SECRET_KEY_BASE=${RAILS_SECRET_KEY_BASE}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_SSL=${DATABASE_SSL}
+      - PUSHER_APP_ID=${PUSHER_APP_ID}
+      - PUSHER_KEY=${PUSHER_KEY}
+      - PUSHER_SECRET=${PUSHER_SECRET}
+      - PUSHER_CLUSTER=${PUSHER_CLUSTER}
     healthcheck:
       test: curl --fail http://localhost:3000 || exit 1
       interval: 30s
