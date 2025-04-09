@@ -1,10 +1,10 @@
 class User < ApplicationRecord
-  validates :username, presence: true
+  validates :username, presence: true, allow_blank: false
 
   def as_json
     {
-      id: id,
-      username: username
+      "id"=> id,
+      "username" => username
     }
   end
 end

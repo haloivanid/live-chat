@@ -14,10 +14,10 @@ class Chat < ApplicationRecord
 
   def as_json
     {
-      id: id,
-      message: message,
-      created_at: created_at,
-      room_member: room_member.as_json
+      "id"=> id,
+      "message"=> message,
+      "created_at"=> created_at,
+      "room_member"=> room_member.as_json
     }
   end
 end
