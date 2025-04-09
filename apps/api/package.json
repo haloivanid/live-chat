@@ -8,7 +8,7 @@
     "rake": "bin/rake",
     "setup": "bin/setup",
     "solargraph": "solargraph",
-    "dev": "rails server",
+    "dev": "node init && rails server",
     "test": "bundle exec rails test",
     "lint": "bundle exec rubocop",
     "lint:fix": "bundle exec rubocop -A",
