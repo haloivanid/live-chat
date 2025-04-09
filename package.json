@@ -4,7 +4,7 @@
   "description": "A simple live chat app",
   "scripts": {
     "prepare": "husky",
-    "dev": "pnpm -r dev",
+    "dev": "node init && pnpm -r dev",
     "test": "echo \"Error: no test specified\"",
     "format": "pnpm -r format"
   },
